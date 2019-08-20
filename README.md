@@ -29,3 +29,10 @@ INSTEAD:
 1. Ask Alexa "Give me an update on companies in my portfolio"
 
 This Alexa app will save you substantial time when you want to know the current news about companies in your investment portfolio from sources you trust.
+
+## Development of Alexa app
+
+The following links were useful while I developed this app:
+https://medium.com/crowdbotics/how-to-build-a-custom-amazon-alexa-skill-step-by-step-my-favorite-chess-player-dcc0edae53fb
+https://www.jovo.tech/tutorials/alexa-login-with-amazon-email
+
