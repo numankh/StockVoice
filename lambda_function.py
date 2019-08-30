@@ -1,3 +1,6 @@
+import hashlib
+import create_db
+
 #------------------------------Part1--------------------------------
 # In this part we define a list that contains the company names, and
 # a dictionary with company news
@@ -40,8 +43,6 @@ def on_end():
 # configure what this function will do upon receiving a particular
 # intent. This can be done by introducing the functions which handle
 # each of the intents.
-import hashlib
-
 def intent_scheme(event):
     print("THIS IS THE USER ID")
     print(event['context']['System']['user']['userId'])
