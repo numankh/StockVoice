@@ -1,5 +1,7 @@
 import hashlib
-import create_db
+import create_db, update_db
+import pymysql
+import utilities
 
 #------------------------------Part1--------------------------------
 # In this part we define a list that contains the company names, and
@@ -13,6 +15,12 @@ Company_NEWS = {"apple":"This is apple news", "amazon":"This is amazon news", "m
 # Request are handled by functions such as on_launch(event) and
 # intent_scheme(event).
 def lambda_handler(event, context):
+    # connecting to database
+    conn = pymysql.connect(dbhost, user=dbuser,port=dbport,
+                           passwd=dbpassword, db=dbname)
+    cursor = conn.cursor()
+
+    # checking the request type
     if event['session']['new']:
         on_start()
     if event['request']['type'] == "LaunchRequest":
@@ -33,6 +41,12 @@ def on_launch(event):
     reprompt_MSG = "Do you want to hear more about a particular company?"
     card_TEXT = "Pick a company."
     card_TITLE = "Choose a company."
+
+    # Processing userId to see if it exists in the database
+    userIdStr = event['context']['System']['user']['userId']
+    userIdStr = hashID(userIdStr)
+    userExists(userIdStr, cursor)
+    
     return output_json_builder_with_reprompt_and_card(onlunch_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
 
 def on_end():
