@@ -8,6 +8,10 @@ import utilities
 # a dictionary with company news
 Company_LIST = ["Apple", "Amazon", "Microsoft"]
 Company_NEWS = {"apple":"This is apple news", "amazon":"This is amazon news", "microsoft":"This is microsoft news"}
+
+Domain_LIST = ["CNN", "BBC", "Fox News"]
+Domain_NEWS = {"cnn":"This is cnn news", "bbc":"This is bbc news", "fox news":"This is fox news"}
+
 host="stockvoicedb.cwnolqf8w7br.us-east-1.rds.amazonaws.com"
 port=3306
 dbname="testDB"
@@ -80,7 +84,7 @@ def intent_scheme(event):
     elif intent_name == "AddCompany":
         return addCompanyIntent(event) 
     elif intent_name == "AddDomain":
-        return player_bio(event)  #TODO
+        return addDomainIntent(event)
     elif intent_name == "GetPorfolioNews":
         return player_bio(event)    #TODO
     elif intent_name in ["AMAZON.NoIntent", "AMAZON.StopIntent", "AMAZON.CancelIntent"]:
@@ -112,12 +116,13 @@ def addCompanyIntent(event):
     userId = utilities.hashID(userId)
     name=event['request']['intent']['slots']['company']['value']
     update_db.addCompany(mydb, mycursor, userId, name.lower())
+
     Company_LIST_lower=[w.lower() for w in Company_LIST]
 
     if name.lower() in Company_LIST_lower:
         reprompt_MSG = "Do you want to hear more about a particular company?"
-        card_TEXT = "You've picked " + name.lower()
-        card_TITLE = "You've picked " + name.lower()
+        card_TEXT = "You've added " + name.lower() + " to your company list"
+        card_TITLE = "You've added " + name.lower() + " to your company list"
         return output_json_builder_with_reprompt_and_card(Company_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
     else:
         wrongname_MSG = "You haven't used the full name of a company. If you have forgotten which company you can pick say Help."
@@ -126,6 +131,27 @@ def addCompanyIntent(event):
         card_TITLE = "Wrong name."
         return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
         
+def addDomainIntent(event):
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
+    name=event['request']['intent']['slots']['domain']['value']
+    update_db.addDomain(mydb, mycursor, userId, name.lower())
+
+    Domain_LIST_lower=[w.lower() for w in Domain_LIST]
+
+    if name.lower() in Domain_LIST_lower:
+        reprompt_MSG = "Do you want to hear more about a particular domain?"
+        card_TEXT = "You've added " + name.lower() + " to your domain list"
+        card_TITLE = "You've added " + name.lower() + " to your domain list"
+        return output_json_builder_with_reprompt_and_card(Domain_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
+    else:
+        wrongname_MSG = "You haven't used the full name of a domain. If you have forgotten which company you can pick say Help."
+        reprompt_MSG = "Do you want to hear more about a particular domain?"
+        card_TEXT = "Use the full name."
+        card_TITLE = "Wrong name."
+        return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
+        
+#---------------------------Part3.2-------------------------------
 def stop_the_skill(event):
     stop_MSG = "Thank you. Bye!"
     reprompt_MSG = ""

@@ -20,3 +20,9 @@ def addCompany(conn, cursor, userId, company):
     val = (userId, company)
     cursor.execute(sql, val)
     conn.commit()
+
+def addDomain(conn, cursor, userId, domain):
+    sql = "INSERT INTO domain (userId, name) VALUES (%s, %s)"
+    val = (userId, domain)
+    cursor.execute(sql, val)
+    conn.commit()
