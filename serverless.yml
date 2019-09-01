@@ -59,6 +59,12 @@ provider:
 functions:
   hello:
     handler: handler.hello
+    environment:
+      dbhost: stockvoicedb.cwnolqf8w7br.us-east-1.rds.amazonaws.com
+      dbport: 3306
+      dbname: testDB
+      dbuser: admin
+      dbpassword: khan2931
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
