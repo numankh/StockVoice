@@ -76,7 +76,13 @@ def intent_scheme(event):
     intent_name = event['request']['intent']['name']
 
     if intent_name == "GetCompanyNews":
-        return player_bio(event)        
+        return player_bio(event)    
+    elif intent_name == "AddCompany":
+        return addCompanyIntent(event) 
+    elif intent_name == "AddDomain":
+        return player_bio(event)  #TODO
+    elif intent_name == "GetPorfolioNews":
+        return player_bio(event)    #TODO
     elif intent_name in ["AMAZON.NoIntent", "AMAZON.StopIntent", "AMAZON.CancelIntent"]:
         return stop_the_skill(event)
     elif intent_name == "AMAZON.HelpIntent":
@@ -89,6 +95,25 @@ def intent_scheme(event):
 def player_bio(event):
     name=event['request']['intent']['slots']['company']['value']
     Company_LIST_lower=[w.lower() for w in Company_LIST]
+    if name.lower() in Company_LIST_lower:
+        reprompt_MSG = "Do you want to hear more about a particular company?"
+        card_TEXT = "You've picked " + name.lower()
+        card_TITLE = "You've picked " + name.lower()
+        return output_json_builder_with_reprompt_and_card(Company_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
+    else:
+        wrongname_MSG = "You haven't used the full name of a company. If you have forgotten which company you can pick say Help."
+        reprompt_MSG = "Do you want to hear more about a particular company?"
+        card_TEXT = "Use the full name."
+        card_TITLE = "Wrong name."
+        return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
+        
+def addCompanyIntent(event):
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
+    name=event['request']['intent']['slots']['company']['value']
+    update_db.addCompany(mydb, mycursor, userId, name.lower())
+    Company_LIST_lower=[w.lower() for w in Company_LIST]
+
     if name.lower() in Company_LIST_lower:
         reprompt_MSG = "Do you want to hear more about a particular company?"
         card_TEXT = "You've picked " + name.lower()
