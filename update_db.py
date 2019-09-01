@@ -14,3 +14,9 @@ def addUser(conn, cursor, userId, appId, deviceId):
     val = (userId, appId, deviceId)
     cursor.execute(sql, val)
     conn.commit()
+
+def addCompany(conn, cursor, userId, company):
+    sql = "INSERT INTO company (userId, name) VALUES (%s, %s)"
+    val = (userId, company)
+    cursor.execute(sql, val)
+    conn.commit()
