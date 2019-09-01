@@ -2,7 +2,6 @@ import json
 import pymysql
 import update_db
 import utilities
-from config import *
 import os
 
 #------------------------------Part1--------------------------------
@@ -14,6 +13,7 @@ Company_NEWS = {"apple":"This is apple news", "amazon":"This is amazon news", "m
 Domain_LIST = ["CNN", "BBC", "Fox News"]
 Domain_NEWS = {"cnn":"This is cnn news", "bbc":"This is bbc news", "fox news":"This is fox news"}
 
+# Connecting to database
 mydb = pymysql.connect(port=int(os.getenv('dbport')), 
                         host=os.getenv('dbhost'), 
                         user=os.getenv('dbuser'), 
