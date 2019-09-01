@@ -1,0 +1,2 @@
+-i https://pypi.org/simple
+pymysql==0.9.3
