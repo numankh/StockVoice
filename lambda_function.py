@@ -2,6 +2,8 @@ import json
 import pymysql
 import update_db
 import utilities
+from config import *
+import os
 
 #------------------------------Part1--------------------------------
 # In this part we define a list that contains the company names, and
@@ -12,13 +14,11 @@ Company_NEWS = {"apple":"This is apple news", "amazon":"This is amazon news", "m
 Domain_LIST = ["CNN", "BBC", "Fox News"]
 Domain_NEWS = {"cnn":"This is cnn news", "bbc":"This is bbc news", "fox news":"This is fox news"}
 
-host="stockvoicedb.cwnolqf8w7br.us-east-1.rds.amazonaws.com"
-port=3306
-dbname="testDB"
-user="admin"
-password="khan2931"
-
-mydb = pymysql.connect(port=port, host=host, user=user, passwd=password, database=dbname)
+mydb = pymysql.connect(port=int(os.getenv('dbport')), 
+                        host=os.getenv('dbhost'), 
+                        user=os.getenv('dbuser'), 
+                        passwd=os.getenv('dbpassword'), 
+                        database=os.getenv('dbname'))
 mycursor = mydb.cursor()
 
 #------------------------------Part2--------------------------------
