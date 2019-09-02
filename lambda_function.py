@@ -1,6 +1,6 @@
 import json
 import pymysql
-import update_db, get_news
+import get_db, update_db, get_news
 import utilities
 import os
 
@@ -82,7 +82,11 @@ def intent_scheme(event):
     elif intent_name == "AddDomain":
         return addDomainIntent(event)
     elif intent_name == "GetPortfolioNews":
-        return getPortfolioNewsIntent(event)    #TODO
+        return getPortfolioNewsIntent(event)
+    elif intent_name == "DomainList":
+        return listDomainIntent(event)
+    elif intent_name == "CompanyList":
+        return listCompanyIntent(event)
     elif intent_name in ["AMAZON.NoIntent", "AMAZON.StopIntent", "AMAZON.CancelIntent"]:
         return stop_the_skill(event)
     elif intent_name == "AMAZON.HelpIntent":
@@ -154,7 +158,37 @@ def getPortfolioNewsIntent(event):
     card_TEXT = "Here's new on all your companies"
     card_TITLE = "Here's new on all your companies"
     return output_json_builder_with_reprompt_and_card(news, card_TEXT, card_TITLE, reprompt_MSG, False)
-        
+
+def listDomainIntent(event):
+
+    # getting userID
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
+
+    # getting news for all companies in user's list
+    domains = get_db.getUserDomains(mycursor, userId)
+
+    # setting up the response 
+    reprompt_MSG = "Do you want to hear more about a particular domain?"
+    card_TEXT = "Here's a list of your domains"
+    card_TITLE = "Here's a list of your domains"
+    return output_json_builder_with_reprompt_and_card(domains, card_TEXT, card_TITLE, reprompt_MSG, False)
+
+def listCompanyIntent(event):
+
+    # getting userID
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
+
+    # getting news for all companies in user's list
+    companies = get_db.getUserCompanies(mycursor, userId)
+
+    # setting up the response 
+    reprompt_MSG = "Do you want to hear more about a particular company?"
+    card_TEXT = "Here's a list of your companies"
+    card_TITLE = "Here's a list of your companies"
+    return output_json_builder_with_reprompt_and_card(companies, card_TEXT, card_TITLE, reprompt_MSG, False)
+             
 #---------------------------Part3.2-------------------------------
 def stop_the_skill(event):
     stop_MSG = "Thank you. Bye!"
