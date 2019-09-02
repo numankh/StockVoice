@@ -167,12 +167,12 @@ def listDomainIntent(event):
 
     # getting news for all companies in user's list
     domains = get_db.getUserDomains(mycursor, userId)
-
+    
     # setting up the response 
     reprompt_MSG = "Do you want to hear more about a particular domain?"
-    card_TEXT = "Here's a list of your domains"
-    card_TITLE = "Here's a list of your domains"
-    return output_json_builder_with_reprompt_and_card(domains, card_TEXT, card_TITLE, reprompt_MSG, False)
+    card_TEXT = "Here's a list of your domains "
+    card_TITLE = "Here's a list of your domains "
+    return output_json_builder_with_reprompt_and_card(card_TEXT + domains, card_TEXT, card_TITLE, reprompt_MSG, False)
 
 def listCompanyIntent(event):
 
@@ -185,9 +185,9 @@ def listCompanyIntent(event):
 
     # setting up the response 
     reprompt_MSG = "Do you want to hear more about a particular company?"
-    card_TEXT = "Here's a list of your companies"
-    card_TITLE = "Here's a list of your companies"
-    return output_json_builder_with_reprompt_and_card(companies, card_TEXT, card_TITLE, reprompt_MSG, False)
+    card_TEXT = "Here's a list of your companies "
+    card_TITLE = "Here's a list of your companies "
+    return output_json_builder_with_reprompt_and_card(card_TEXT + companies, card_TEXT, card_TITLE, reprompt_MSG, False)
              
 #---------------------------Part3.2-------------------------------
 def stop_the_skill(event):
