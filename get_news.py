@@ -1,8 +1,9 @@
 from newsapi import NewsApiClient
+import get_db
 import os
 
 def getCompanyNews(cursor, userId, companyName):
-    userDomains = getUserDomains(cursor, userId)
+    userDomains = get_db.getUserDomains(cursor, userId)
     newsapi = NewsApiClient(api_key=os.getenv('newsApiKey'))
 
     all_articles = newsapi.get_everything(q=companyName,
@@ -20,32 +21,10 @@ def getCompanyNews(cursor, userId, companyName):
             count += 1
     return output[:-2]
 
-def getUserDomains(cursor, userId):
-    cursor.execute('select name from domain where userId={};'.format(userId))
-    myresult = cursor.fetchall()
-    
-    output = ""
-    for x in myresult:
-        output = output + x[0] + ","
-    output = output[:-1]
-
-    return output
-
-def getUserCompanies(cursor, userId):
-    cursor.execute('select name from company where userId={};'.format(userId))
-    myresult = cursor.fetchall()
-    
-    output = ""
-    for x in myresult:
-        output = output + x[0] + ","
-    output = output[:-1]
-
-    return output
-
 def getPortfolioNews(cursor, userId):
     newsapi = NewsApiClient(api_key=os.getenv('newsApiKey'))
-    userDomains = getUserDomains(cursor, userId)
-    userCompanies = getUserCompanies(cursor, userId)
+    userDomains = get_db.getUserDomains(cursor, userId)
+    userCompanies = get_db.getUserCompanies(cursor, userId)
     output = ""
     userCompanies = userCompanies.split(',')
     
