@@ -81,8 +81,8 @@ def intent_scheme(event):
         return addCompanyIntent(event) 
     elif intent_name == "AddDomain":
         return addDomainIntent(event)
-    elif intent_name == "GetPorfolioNews":
-        return player_bio(event)    #TODO
+    elif intent_name == "GetPortfolioNews":
+        return getPortfolioNewsIntent(event)    #TODO
     elif intent_name in ["AMAZON.NoIntent", "AMAZON.StopIntent", "AMAZON.CancelIntent"]:
         return stop_the_skill(event)
     elif intent_name == "AMAZON.HelpIntent":
@@ -139,6 +139,21 @@ def addDomainIntent(event):
     card_TEXT = "You've added " + name + " to your domain list"
     card_TITLE = "You've added " + name + " to your domain list"
     return output_json_builder_with_reprompt_and_card(card_TEXT, card_TEXT, card_TITLE, reprompt_MSG, False)
+        
+def getPortfolioNewsIntent(event):
+
+    # getting userID
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
+
+    # getting news for all companies in user's list
+    news = get_news.getPortfolioNews(mycursor, userId)
+
+    # setting up the response 
+    reprompt_MSG = "Do you want to hear more about a particular company?"
+    card_TEXT = "Here's new on all your companies"
+    card_TITLE = "Here's new on all your companies"
+    return output_json_builder_with_reprompt_and_card(news, card_TEXT, card_TITLE, reprompt_MSG, False)
         
 #---------------------------Part3.2-------------------------------
 def stop_the_skill(event):
