@@ -26,13 +26,8 @@ mycursor = mydb.cursor()
 # an event with a Launch, Intent and Session End Requests are sent. # The Lambda function responses to an event carrying a particular 
 # Request are handled by functions such as on_launch(event) and 
 # intent_scheme(event).
+
 def lambda_handler(event, context):
-    # connecting to database
-    
-    # mycursor.execute("show tables;")
-    # for x in mycursor:
-    #     print(x)
-    
     if event['session']['new']:
         on_start()
     if event['request']['type'] == "LaunchRequest":
@@ -44,6 +39,7 @@ def lambda_handler(event, context):
         
 #------------------------------Part3--------------------------------
 # Here we define the Request handler functions
+
 def on_start():
     print("Session Started.")
 
@@ -54,13 +50,13 @@ def on_launch(event):
     card_TEXT = "Pick a company."
     card_TITLE = "Choose a company."
     
+    # retrieving user related info
     userId = event['context']['System']['user']['userId']
     userId = utilities.hashID(userId)
     appId = event['context']['System']['application']['applicationId']
     deviceId = event['context']['System']['device']['deviceId']
     
-    # print(update_db.userExists(userId, mycursor))
-    
+    # checking if the user exists in the database
     if not update_db.userExists(userId, mycursor):
         update_db.addUser(mydb, mycursor, userId, appId, deviceId)
         print("IS THIS WORKING")
@@ -111,19 +107,6 @@ def getCompanyNewsIntent(event):
     card_TEXT = "You've picked " + name
     card_TITLE = "You've picked " + name
     return output_json_builder_with_reprompt_and_card(news, card_TEXT, card_TITLE, reprompt_MSG, False)
-
-    # Company_LIST_lower=[w.lower() for w in Company_LIST]
-    # if name.lower() in Company_LIST_lower:
-    #     reprompt_MSG = "Do you want to hear more about a particular company?"
-    #     card_TEXT = "You've picked " + name.lower()
-    #     card_TITLE = "You've picked " + name.lower()
-    #     return output_json_builder_with_reprompt_and_card(news, card_TEXT, card_TITLE, reprompt_MSG, False)
-    # else:
-    #     wrongname_MSG = "You haven't used the full name of a company. If you have forgotten which company you can pick say Help."
-    #     reprompt_MSG = "Do you want to hear more about a particular company?"
-    #     card_TEXT = "Use the full name."
-    #     card_TITLE = "Wrong name."
-    #     return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
         
 def addCompanyIntent(event):
 
@@ -140,20 +123,6 @@ def addCompanyIntent(event):
     card_TEXT = "You've added " + name + " to your company list"
     card_TITLE = "You've added " + name + " to your company list"
     return output_json_builder_with_reprompt_and_card(card_TEXT, card_TEXT, card_TITLE, reprompt_MSG, False)
-
-    # Company_LIST_lower=[w.lower() for w in Company_LIST]
-
-    # if name.lower() in Company_LIST_lower:
-    #     reprompt_MSG = "Do you want to hear more about a particular company?"
-    #     card_TEXT = "You've added " + name.lower() + " to your company list"
-    #     card_TITLE = "You've added " + name.lower() + " to your company list"
-    #     return output_json_builder_with_reprompt_and_card(Company_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
-    # else:
-    #     wrongname_MSG = "You haven't used the full name of a company. If you have forgotten which company you can pick say Help."
-    #     reprompt_MSG = "Do you want to hear more about a particular company?"
-    #     card_TEXT = "Use the full name."
-    #     card_TITLE = "Wrong name."
-    #     return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
         
 def addDomainIntent(event):
 
@@ -170,20 +139,6 @@ def addDomainIntent(event):
     card_TEXT = "You've added " + name + " to your domain list"
     card_TITLE = "You've added " + name + " to your domain list"
     return output_json_builder_with_reprompt_and_card(card_TEXT, card_TEXT, card_TITLE, reprompt_MSG, False)
-
-    # Domain_LIST_lower=[w.lower() for w in Domain_LIST]
-
-    # if name.lower() in Domain_LIST_lower:
-    #     reprompt_MSG = "Do you want to hear more about a particular domain?"
-    #     card_TEXT = "You've added " + name.lower() + " to your domain list"
-    #     card_TITLE = "You've added " + name.lower() + " to your domain list"
-    #     return output_json_builder_with_reprompt_and_card(Domain_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
-    # else:
-    #     wrongname_MSG = "You haven't used the full name of a domain. If you have forgotten which company you can pick say Help."
-    #     reprompt_MSG = "Do you want to hear more about a particular domain?"
-    #     card_TEXT = "Use the full name."
-    #     card_TITLE = "Wrong name."
-    #     return output_json_builder_with_reprompt_and_card(wrongname_MSG, card_TEXT, card_TITLE, reprompt_MSG, False)
         
 #---------------------------Part3.2-------------------------------
 def stop_the_skill(event):
