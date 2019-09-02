@@ -1,6 +1,6 @@
 import json
 import pymysql
-import update_db
+import update_db, get_news
 import utilities
 import os
 
@@ -80,7 +80,7 @@ def intent_scheme(event):
     intent_name = event['request']['intent']['name']
 
     if intent_name == "GetCompanyNews":
-        return player_bio(event)    
+        return getCompanyNewsIntent(event)    
     elif intent_name == "AddCompany":
         return addCompanyIntent(event) 
     elif intent_name == "AddDomain":
@@ -96,14 +96,19 @@ def intent_scheme(event):
         
 #---------------------------Part3.1.1-------------------------------
 # Here we define the intent handler functions
-def player_bio(event):
+def getCompanyNewsIntent(event):
+    userId = event['context']['System']['user']['userId']
+    userId = utilities.hashID(userId)
     name=event['request']['intent']['slots']['company']['value']
+    news = get_news.getCompanyNews(mycursor, userId, name)
+    # print(news)
+
     Company_LIST_lower=[w.lower() for w in Company_LIST]
     if name.lower() in Company_LIST_lower:
         reprompt_MSG = "Do you want to hear more about a particular company?"
         card_TEXT = "You've picked " + name.lower()
         card_TITLE = "You've picked " + name.lower()
-        return output_json_builder_with_reprompt_and_card(Company_NEWS[name.lower()], card_TEXT, card_TITLE, reprompt_MSG, False)
+        return output_json_builder_with_reprompt_and_card(news, card_TEXT, card_TITLE, reprompt_MSG, False)
     else:
         wrongname_MSG = "You haven't used the full name of a company. If you have forgotten which company you can pick say Help."
         reprompt_MSG = "Do you want to hear more about a particular company?"

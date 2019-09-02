@@ -1,12 +1,32 @@
 from newsapi import NewsApiClient
-import config
+import os
 
-newsapi = NewsApiClient(api_key=config.api_key)
+def getCompanyNews(cursor, userId, companyName):
+    userDomains = getUserDomains(cursor, userId)
+    newsapi = NewsApiClient(api_key=os.getenv('newsApiKey'))
 
-apple_articles = newsapi.get_everything(q='apple',
-                                      from_param='2019-08-10',
-                                      to='2019-08-16',
+    all_articles = newsapi.get_everything(q=companyName,
+                                      sources=userDomains,
                                       language='en',
                                       sort_by='relevancy')
-                    
-print(apple_articles)
+                                      
+    count = 1
+    output = ""
+    if(len(all_articles) != 0):
+        for x in all_articles['articles']:
+            if(count == 4):
+                break
+            output = output + "Article " + str(count) + ": " + x['title'] + ", "
+            count += 1
+    return output[:-2]
+
+def getUserDomains(cursor, userId):
+    cursor.execute('select name from domain where userId={};'.format(userId))
+    myresult = cursor.fetchall()
+    
+    output = ""
+    for x in myresult:
+        output = output + x[0] + ","
+    output = output[:-1]
+
+    return output
